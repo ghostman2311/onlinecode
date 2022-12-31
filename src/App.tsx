@@ -1,6 +1,7 @@
 import React from "react";
 import * as esbuild from "esbuild-wasm";
 import "./App.css";
+import { unpkgPathPlugin } from "./plugins/path-plugin";
 
 function App() {
   const [input, setInput] = React.useState("");
@@ -20,11 +21,18 @@ function App() {
   };
   const submitCode = async () => {
     if (!ref.current) return;
-    const result = await ref.current.transform(input, {
-      loader: "jsx",
-      target: "es2015",
+    // const result = await ref.current.transform(input, {
+    //   loader: "jsx",
+    //   target: "es2015",
+    // });
+
+    const result = await ref.current.build({
+      entryPoints: ["index.js"],
+      bundle: true,
+      write: false,
+      plugins: [unpkgPathPlugin()],
     });
-    setCode(result.js);
+    setCode(result.outputFiles[0].text);
   };
   return (
     <div className="App">
