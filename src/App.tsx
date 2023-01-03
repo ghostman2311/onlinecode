@@ -28,14 +28,16 @@ function App() {
 
     const result = await ref.current.build({
       entryPoints: ["index.js"],
-      bundle: true,
       write: false,
+      bundle: true,
       plugins: [unpkgPathPlugin()],
       define: {
         "process.env.NODE_ENV": '"production"',
         global: "window",
       },
     });
+
+    console.log(result);
     setCode(result.outputFiles[0].text);
   };
   return (

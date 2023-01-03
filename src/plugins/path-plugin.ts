@@ -7,22 +7,21 @@ export const unpkgPathPlugin = () => {
     setup(build: esbuild.PluginBuild) {
       build.onResolve({ filter: /.*/ }, async (args: any) => {
         console.log("onResole", args);
-        if(args.path === 'index.js'){
-
+         if(args.path === 'index.js'){
           return { path: args.path, namespace: "a" };
-        } 
-        else if(args.path.includes('./') || args.path.includes('../')){
-          console.log(args, 'args')
-          return {
-            namespace:'a',
-            path: new URL(args.path, 'https://unpkg.com' +  args.resolveDir + '/').href
-          }
-        }
+         } 
+         else if(args.path.includes('./') || args.path.includes('../')){
           return{
-            path:`https://unpkg.com/${args.path}`, 
-            namespace: 'a'
+            namespace: 'a',
+            path: new URL(args.path, 'https://unpkg.com' + args.resolveDir +  '/').href
           }
-      
+         }
+
+         return {
+          namespace: "a",
+          path: `https://unpkg.com/${args.path}`
+         }
+        
       });
 
       build.onLoad({ filter: /.*/ }, async (args: any) => {
@@ -32,15 +31,16 @@ export const unpkgPathPlugin = () => {
           return {
             loader: "jsx",
             contents: `
-              const message = require('react');
+              const message = require('nested-test-pkg');
               console.log(message);
             `,
           }; 
         } else {
-          const {data, request} = await axios.get(args.path)
+          const { data, request } = await axios(args.path);
+          console.log('request', request)
           return {
             loader:'jsx',
-            contents:data, 
+            contents:data,
             resolveDir: new URL('./', request.responseURL).pathname
           }
         }
