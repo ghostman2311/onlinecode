@@ -2,6 +2,7 @@ import React from "react";
 import * as esbuild from "esbuild-wasm";
 import "./App.css";
 import { unpkgPathPlugin } from "./plugins/path-plugin";
+import { unpkgLoadPlugin } from "./plugins/load-plugin";
 
 function App() {
   const [input, setInput] = React.useState("");
@@ -30,7 +31,7 @@ function App() {
       entryPoints: ["index.js"],
       write: false,
       bundle: true,
-      plugins: [unpkgPathPlugin(input)],
+      plugins: [unpkgPathPlugin(), unpkgLoadPlugin(input)],
       define: {
         "process.env.NODE_ENV": '"production"',
         global: "window",

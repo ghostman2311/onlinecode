@@ -6,7 +6,7 @@ const fileCache = localforage.createInstance({
   name: "fileCache"
 })
 
-export const unpkgPathPlugin = (inputCode:string) => {
+export const unpkgPathPlugin = () => {
 
   return {
     name: "unpkg-path-plugin",
@@ -30,29 +30,7 @@ export const unpkgPathPlugin = (inputCode:string) => {
         
       });
 
-      build.onLoad({ filter: /.*/ }, async (args: any) => {
-        console.log("onLoad", args);
-
-        if (args.path === "index.js") {
-          return {
-            loader: "jsx",
-            contents:inputCode,
-          }; 
-        } 
-          const cachedResult = await fileCache.getItem(args.path);
-          if(cachedResult) {
-            return cachedResult;
-          }
-          const { data, request } = await axios(args.path);
-          
-          const result = {
-            loader:'jsx',
-            contents:data,
-            resolveDir: new URL('./', request.responseURL).pathname
-          }
-          await fileCache.setItem(args.path, result);
-          return result;
-      });
+    
     },
   };
 };
