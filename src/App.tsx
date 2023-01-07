@@ -51,6 +51,7 @@ function App() {
       <textarea value={input} onChange={(e) => setInput(e.target.value)} />
       <button onClick={submitCode}>Submit</button>
       <pre>{code}</pre>
+      <iframe title="preview" src="./test.html" />
     </div>
   );
 }
